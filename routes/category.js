@@ -7,8 +7,8 @@ const { Category } = require("../models/index");
 // Route to add a new post
 app.post("/", async (req, res) => {
   try {
-    const { category_name } = req.body;
-    const category = await Category.create({ category_name });
+    const { name } = req.body;
+    const category = await Category.create({ name });
     res.status(201).json(category);
   } catch (error) {
     console.log(error);
@@ -30,12 +30,12 @@ app.get("/", async (req, res) => {
 
 app.get("/:id", async (req, res) => {
   try {
-    const category = await Post.findByPk(req.params.id);
+    const category = await Category.findByPk(req.params.id, { include: ['posts'] });
     res.json(category);
   } catch (error) {
     res.status(500).json({ error: "Error retrieving category" });
   }
-});
+})
 
 // Route to update a category
 app.put("/:id", async (req, res) => {
@@ -52,10 +52,10 @@ app.put("/:id", async (req, res) => {
 });
 
 // Route to delete a category
-app.delete("//:id", async (req, res) => {
+app.delete("/:id", async (req, res) => {
   try {
-    const category = await Category.destroy({ where: { id: req.params.id } });
-    res.json(category);
+    const deleted = await Category.destroy({ where: { id: req.params.id } });
+    res.json({ deleted });
   } catch (error) {
     res.status(500).json({ error: "Error deleting category" });
   }

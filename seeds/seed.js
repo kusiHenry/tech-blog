@@ -1,22 +1,17 @@
-// Import required packages
-const sequelize = require("../config/connection");
+const sequelize = require('../config/connection');
+const { User, Post, Category } = require('../models');
+const userData = require('./users.json');
+const postData = require('./posts.json');
+const categoryData = require('./categories.json');
 
-// import models
-const { Post, Category } = require("../models");
-
-// add data and seeding for Category model
-const categoryData = require("./category.json")
-// import seed data
-const postData = require("./posts.json");
-
-// Seed database
 const seedDatabase = async () => {
   await sequelize.sync({ force: true });
 
+  await Category.bulkCreate(categoryData);
+  await User.bulkCreate(userData, { individualHooks: true });
   await Post.bulkCreate(postData);
 
   process.exit(0);
 };
 
-// Call seedDatabase function
 seedDatabase();
